@@ -327,6 +327,10 @@ class Player : public Creature, public Cylinder
 			{warMap[guild] = war;}
 		void removeEnemy(uint32_t guild) {warMap.erase(guild);}
 
+		OutfitMap getOutfitsMap() {
+			return outfits;
+		}
+
 		uint32_t getVocationId() const {return vocationId;}
 		void setVocation(uint32_t id);
 		uint16_t getSex(bool full) const {return full ? sex : sex % 2;}

@@ -646,6 +646,206 @@ bool Outfits::addAttributes(uint32_t playerId, uint32_t outfitId, uint16_t sex, 
 	if(it == map.end())
 		return false;
 
+	bool needUpdateStats = false;
+	bool needUpdateSkills = false;
+	int32_t health = 0;
+	int32_t mana = 0;
+	int32_t level = 0;
+	int32_t magicLevel = 0;	
+	
+	int32_t healthPercent = 0;
+	int32_t manaPercent = 0;
+	int32_t levelPercent = 0;
+	int32_t magicLevelPercent = 0;
+
+	int32_t skillFist = 0;
+	int32_t skillSword = 0;
+	int32_t skillClub = 0;
+	int32_t skillAxe = 0;
+	int32_t skillDist = 0;
+	int32_t skillShield = 0;
+
+	int32_t magicLevelEnergy = 0;
+	int32_t magicLevelFire = 0;
+	int32_t magicLevelEarth = 0;
+	int32_t magicLevelIce = 0;
+	int32_t magicLevelHoly = 0;
+	int32_t magicLevelDeath = 0;
+	int32_t magicLevelPhysical = 0;
+	int32_t magicLevelPhysical = 0;
+	int32_t criticalHitDamage = 0;
+
+	for (OutfitMap::iterator iter = player->getOutfitsMap().begin(); iter != player->getOutfitsMap().end(); ++iter)
+	{
+		if (player->canWearOutfit(iter->first, iter->second.addons)) {
+			if (iter->second.stats[STAT_MAXHEALTH]) {
+				health += iter->second.stats[STAT_MAXHEALTH];
+			}			
+			if (iter->second.stats[STAT_MAXMANA]) {
+				mana += iter->second.stats[STAT_MAXMANA];
+			}			
+			if (iter->second.stats[STAT_LEVEL]) {
+				level += iter->second.stats[STAT_LEVEL];
+			}			
+			if (iter->second.stats[STAT_MAGICLEVEL]) {
+				magicLevel += iter->second.stats[STAT_MAGICLEVEL];
+			}			
+
+			if (iter->second.statsPercent[STAT_MAXHEALTH]) {
+				healthPercent += iter->second.statsPercent[STAT_MAXHEALTH];
+			}			
+			if (iter->second.statsPercent[STAT_MAXMANA]) {
+				manaPercent += iter->second.statsPercent[STAT_MAXMANA];
+			}			
+			if (iter->second.statsPercent[STAT_LEVEL]) {
+				levelPercent += iter->second.statsPercent[STAT_LEVEL];
+			}			
+			if (iter->second.statsPercent[STAT_MAGICLEVEL]) {
+				magicLevelPercent += iter->second.statsPercent[STAT_MAGICLEVEL];
+			}
+
+			if (iter->second.skills[SKILL_FIST]) {
+				skillFist += iter->second.skills[SKILL_FIST];
+			}	
+			if (iter->second.skills[SKILL_CLUB]) {
+				skillClub += iter->second.skills[SKILL_CLUB];
+			}			
+			if (iter->second.skills[SKILL_SWORD]) {
+				skillSword += iter->second.skills[SKILL_SWORD];
+			}				
+			if (iter->second.skills[SKILL_AXE]) {
+				skillAxe += iter->second.skills[SKILL_AXE];
+			}					
+			if (iter->second.skills[SKILL_SHIELD]) {
+				skillShield += iter->second.skills[SKILL_SHIELD];
+			}					
+			if (iter->second.skills[SKILL_DIST]) {
+				skillDist += iter->second.skills[SKILL_DIST];
+			}				
+			if (iter->second.skills[SKILL_SHIELD]) {
+				skillShield += iter->second.skills[SKILL_SHIELD];
+			}					
+
+			if (iter->second.stats[STAT_MAGICLEVELENERGY]) {
+				magicLevelEnergy += iter->second.stats[STAT_MAGICLEVELENERGY];
+			}	
+			if (iter->second.stats[STAT_MAGICLEVELFIRE]) {
+				magicLevelFire += iter->second.stats[STAT_MAGICLEVELFIRE];
+			}		
+			if (iter->second.stats[STAT_MAGICLEVELEARTH]) {
+				magicLevelEarth += iter->second.stats[STAT_MAGICLEVELEARTH];
+			}			
+			if (iter->second.stats[STAT_MAGICLEVELICE]) {
+				magicLevelIce += iter->second.stats[STAT_MAGICLEVELICE];
+			}				
+			if (iter->second.stats[STAT_MAGICLEVELHOLY]) {
+				magicLevelHoly += iter->second.stats[STAT_MAGICLEVELHOLY];
+			}					
+			if (iter->second.stats[STAT_MAGICLEVELDEATH]) {
+				magicLevelDeath += iter->second.stats[STAT_MAGICLEVELDEATH];
+			}						
+			if (iter->second.stats[STAT_MAGICLEVELPHYSICAL]) {
+				magicLevelPhisical += iter->second.stats[STAT_MAGICLEVELPHYSICAL];
+			}						
+			if (iter->second.stats[STAT_CRITICALHITDAMAGE]) {
+				criticalHitDamage += iter->second.stats[STAT_CRITICALHITDAMAGE];
+			}			
+
+		}
+	}
+
+	if (health > 0) {
+		player->setVarStats(STAT_MAXHEALTH, health);
+		needUpdateStats = true;
+	}
+	if (mana > 0) {
+		player->setVarStats(STAT_MAXMANA, mana);
+		needUpdateStats = true;
+	}	
+	if (level > 0) {
+		player->setVarStats(STAT_LEVEL, level);
+		needUpdateStats = true;
+	}	
+	if (magicLevel > 0) {
+		player->setVarStats(STAT_MAGICLEVEL, magicLevel);
+		needUpdateStats = true;
+	}
+
+	if (healthPercent > 0) {
+		player->setVarStats(STAT_MAXHEALTH, (int32_t)(player->getDefaultStats(STAT_MAXHEALTH) * ((healthPercent - 100) / 100.f)));
+		needUpdateStats = true;
+	}
+	if (manaPercent > 0) {
+		player->setVarStats(STAT_MAXMANA, (int32_t)(player->getDefaultStats(STAT_MAXMANA) * ((manaPercent - 100) / 100.f)));
+		needUpdateStats = true;
+	}	
+	if (levelPercent > 0) {
+		player->setVarStats(STAT_LEVEL, (int32_t)(player->getDefaultStats(STAT_LEVEL) * ((levelPercent - 100) / 100.f)));
+		needUpdateStats = true;
+	}	
+	if (magicLevelPercent > 0) {
+		player->setVarStats(STAT_MAGICLEVEL, (int32_t)(player->getDefaultStats(STAT_MAGICLEVEL) * ((magicLevelPercent - 100) / 100.f)));
+		needUpdateStats = true;
+	}
+
+	if (skillFist > 0) {
+		player->setVarSkill(SKILL_FIST, skillFist);
+		needUpdateSkills = true;
+	}
+	if (skillSword > 0) {
+		player->setVarSkill(SKILL_SWORD, skillSword);
+		needUpdateSkills = true;
+	}
+	if (skillClub > 0) {
+		player->setVarSkill(SKILL_CLUB, skillClub);
+		needUpdateSkills = true;
+	}
+	if (skillAxe > 0) {
+		player->setVarSkill(SKILL_AXE, skillAxe);
+		needUpdateSkills = true;
+	}
+	if (skillDist > 0) {
+		player->setVarSkill(SKILL_DIST, skillDist);
+		needUpdateSkills = true;
+	}
+	if (skillShield > 0) {
+		player->setVarSkill(SKILL_SHIELD, skillShield);
+		needUpdateSkills = true;
+	}
+
+	if (magicLevelEnergy > 0) {
+		player->setVarStats(STAT_MAGICLEVELENERGY, magicLevelEnergy);
+		needUpdateStats = true;
+	}
+	if (magicLevelFire > 0) {
+		player->setVarStats(STAT_MAGICLEVELFIRE, magicLevelFire);
+		needUpdateStats = true;
+	}
+	if (magicLevelEarth > 0) {
+		player->setVarStats(STAT_MAGICLEVELEARTH, magicLevelEarth);
+		needUpdateStats = true;
+	}	
+	if (magicLevelIce > 0) {
+		player->setVarStats(STAT_MAGICLEVELICE, magicLevelIce);
+		needUpdateStats = true;
+	}	
+	if (magicLevelHoly > 0) {
+		player->setVarStats(STAT_MAGICLEVELHOLY, magicLevelHoly);
+		needUpdateStats = true;
+	}	
+	if (magicLevelDeath > 0) {
+		player->setVarStats(STAT_MAGICLEVELDEATH, magicLevelDeath);
+		needUpdateStats = true;
+	}
+	if (magicLevelPhysical > 0) {
+		player->setVarStats(STAT_MAGICLEVELPHYSICAL, magicLevelPhysical);
+		needUpdateStats = true;
+	}
+	if (criticalHitDamage > 0) {
+		player->setVarStats(STAT_CRITICALHITDAMAGE, criticalHitDamage);
+		needUpdateStats = true;
+	}
+
 	Outfit outfit = it->second;
 	if(outfit.requirement != (AddonRequirement_t)addons && (outfit.requirement != REQUIREMENT_ANY || !addons))
 		return false;
@@ -689,40 +889,38 @@ bool Outfits::addAttributes(uint32_t playerId, uint32_t outfitId, uint16_t sex, 
 		player->addCondition(condition);
 	}
 
-	bool needUpdateSkills = false;
-	for(uint32_t i = SKILL_FIRST; i <= SKILL_LAST; ++i)
-	{
-		if(outfit.skills[i])
-		{
-			needUpdateSkills = true;
-			player->setVarSkill((skills_t)i, outfit.skills[i]);
-		}
+	// for(uint32_t i = SKILL_FIRST; i <= SKILL_LAST; ++i)
+	// {
+	// 	if(outfit.skills[i])
+	// 	{
+	// 		needUpdateSkills = true;
+	// 		player->setVarSkill((skills_t)i, outfit.skills[i]);
+	// 	}
 
-		if(outfit.skillsPercent[i])
-		{
-			needUpdateSkills = true;
-			player->setVarSkill((skills_t)i, (int32_t)(player->getSkill((skills_t)i, SKILL_LEVEL) * ((outfit.skillsPercent[i] - 100) / 100.f)));
-		}
-	}
+	// 	if(outfit.skillsPercent[i])
+	// 	{
+	// 		needUpdateSkills = true;
+	// 		player->setVarSkill((skills_t)i, (int32_t)(player->getSkill((skills_t)i, SKILL_LEVEL) * ((outfit.skillsPercent[i] - 100) / 100.f)));
+	// 	}
+	// }
 
 	if(needUpdateSkills)
 		player->sendSkills();
 
-	bool needUpdateStats = false;
-	for(uint32_t s = STAT_FIRST; s <= STAT_LAST; ++s)
-	{
-		if(outfit.stats[s])
-		{
-			needUpdateStats = true;
-			player->setVarStats((stats_t)s, outfit.stats[s]);
-		}
+	// for(uint32_t s = STAT_FIRST; s <= STAT_LAST; ++s)
+	// {
+	// 	if(outfit.stats[s])
+	// 	{
+	// 		needUpdateStats = true;
+	// 		player->setVarStats((stats_t)s, outfit.stats[s]);
+	// 	}
 
-		if(outfit.statsPercent[s])
-		{
-			needUpdateStats = true;
-			player->setVarStats((stats_t)s, (int32_t)(player->getDefaultStats((stats_t)s) * ((outfit.statsPercent[s] - 100) / 100.f)));
-		}
-	}
+	// 	if(outfit.statsPercent[s])
+	// 	{
+	// 		needUpdateStats = true;
+	// 		player->setVarStats((stats_t)s, (int32_t)(player->getDefaultStats((stats_t)s) * ((outfit.statsPercent[s] - 100) / 100.f)));
+	// 	}
+	// }
 
 	if(needUpdateStats)
 		player->sendStats();
@@ -740,6 +938,206 @@ bool Outfits::removeAttributes(uint32_t playerId, uint32_t outfitId, uint16_t se
 	OutfitMap::iterator it = map.find(outfitId);
 	if(it == map.end())
 		return false;
+
+		bool needUpdateStats = false;
+	bool needUpdateSkills = false;
+	int32_t health = 0;
+	int32_t mana = 0;
+	int32_t level = 0;
+	int32_t magicLevel = 0;	
+	
+	int32_t healthPercent = 0;
+	int32_t manaPercent = 0;
+	int32_t levelPercent = 0;
+	int32_t magicLevelPercent = 0;
+
+	int32_t skillFist = 0;
+	int32_t skillSword = 0;
+	int32_t skillClub = 0;
+	int32_t skillAxe = 0;
+	int32_t skillDist = 0;
+	int32_t skillShield = 0;
+
+	int32_t magicLevelEnergy = 0;
+	int32_t magicLevelFire = 0;
+	int32_t magicLevelEarth = 0;
+	int32_t magicLevelIce = 0;
+	int32_t magicLevelHoly = 0;
+	int32_t magicLevelDeath = 0;
+	int32_t magicLevelPhysical = 0;
+	int32_t magicLevelPhysical = 0;
+	int32_t criticalHitDamage = 0;
+
+	for (OutfitMap::iterator iter = player->getOutfitsMap().begin(); iter != player->getOutfitsMap().end(); ++iter)
+	{
+		if (player->canWearOutfit(iter->first, iter->second.addons)) {
+			if (iter->second.stats[STAT_MAXHEALTH]) {
+				health += iter->second.stats[STAT_MAXHEALTH];
+			}			
+			if (iter->second.stats[STAT_MAXMANA]) {
+				mana += iter->second.stats[STAT_MAXMANA];
+			}			
+			if (iter->second.stats[STAT_LEVEL]) {
+				level += iter->second.stats[STAT_LEVEL];
+			}			
+			if (iter->second.stats[STAT_MAGICLEVEL]) {
+				magicLevel += iter->second.stats[STAT_MAGICLEVEL];
+			}			
+
+			if (iter->second.statsPercent[STAT_MAXHEALTH]) {
+				healthPercent += iter->second.statsPercent[STAT_MAXHEALTH];
+			}			
+			if (iter->second.statsPercent[STAT_MAXMANA]) {
+				manaPercent += iter->second.statsPercent[STAT_MAXMANA];
+			}			
+			if (iter->second.statsPercent[STAT_LEVEL]) {
+				levelPercent += iter->second.statsPercent[STAT_LEVEL];
+			}			
+			if (iter->second.statsPercent[STAT_MAGICLEVEL]) {
+				magicLevelPercent += iter->second.statsPercent[STAT_MAGICLEVEL];
+			}
+
+			if (iter->second.skills[SKILL_FIST]) {
+				skillFist += iter->second.skills[SKILL_FIST];
+			}	
+			if (iter->second.skills[SKILL_CLUB]) {
+				skillClub += iter->second.skills[SKILL_CLUB];
+			}			
+			if (iter->second.skills[SKILL_SWORD]) {
+				skillSword += iter->second.skills[SKILL_SWORD];
+			}				
+			if (iter->second.skills[SKILL_AXE]) {
+				skillAxe += iter->second.skills[SKILL_AXE];
+			}					
+			if (iter->second.skills[SKILL_SHIELD]) {
+				skillShield += iter->second.skills[SKILL_SHIELD];
+			}					
+			if (iter->second.skills[SKILL_DIST]) {
+				skillDist += iter->second.skills[SKILL_DIST];
+			}				
+			if (iter->second.skills[SKILL_SHIELD]) {
+				skillShield += iter->second.skills[SKILL_SHIELD];
+			}					
+
+			if (iter->second.stats[STAT_MAGICLEVELENERGY]) {
+				magicLevelEnergy += iter->second.stats[STAT_MAGICLEVELENERGY];
+			}	
+			if (iter->second.stats[STAT_MAGICLEVELFIRE]) {
+				magicLevelFire += iter->second.stats[STAT_MAGICLEVELFIRE];
+			}		
+			if (iter->second.stats[STAT_MAGICLEVELEARTH]) {
+				magicLevelEarth += iter->second.stats[STAT_MAGICLEVELEARTH];
+			}			
+			if (iter->second.stats[STAT_MAGICLEVELICE]) {
+				magicLevelIce += iter->second.stats[STAT_MAGICLEVELICE];
+			}				
+			if (iter->second.stats[STAT_MAGICLEVELHOLY]) {
+				magicLevelHoly += iter->second.stats[STAT_MAGICLEVELHOLY];
+			}					
+			if (iter->second.stats[STAT_MAGICLEVELDEATH]) {
+				magicLevelDeath += iter->second.stats[STAT_MAGICLEVELDEATH];
+			}						
+			if (iter->second.stats[STAT_MAGICLEVELPHYSICAL]) {
+				magicLevelPhisical += iter->second.stats[STAT_MAGICLEVELPHYSICAL];
+			}						
+			if (iter->second.stats[STAT_CRITICALHITDAMAGE]) {
+				criticalHitDamage += iter->second.stats[STAT_CRITICALHITDAMAGE];
+			}			
+
+		}
+	}
+
+	if (health > 0) {
+		player->setVarStats(STAT_MAXHEALTH, -health);
+		needUpdateStats = true;
+	}
+	if (mana > 0) {
+		player->setVarStats(STAT_MAXMANA, -mana);
+		needUpdateStats = true;
+	}	
+	if (level > 0) {
+		player->setVarStats(STAT_LEVEL, -level);
+		needUpdateStats = true;
+	}	
+	if (magicLevel > 0) {
+		player->setVarStats(STAT_MAGICLEVEL, -magicLevel);
+		needUpdateStats = true;
+	}
+
+	if (healthPercent > 0) {
+		player->setVarStats(STAT_MAXHEALTH, -(int32_t)(player->getDefaultStats(STAT_MAXHEALTH) * ((healthPercent - 100) / 100.f)));
+		needUpdateStats = true;
+	}
+	if (manaPercent > 0) {
+		player->setVarStats(STAT_MAXMANA, -(int32_t)(player->getDefaultStats(STAT_MAXMANA) * ((manaPercent - 100) / 100.f)));
+		needUpdateStats = true;
+	}	
+	if (levelPercent > 0) {
+		player->setVarStats(STAT_LEVEL, -(int32_t)(player->getDefaultStats(STAT_LEVEL) * ((levelPercent - 100) / 100.f)));
+		needUpdateStats = true;
+	}	
+	if (magicLevelPercent > 0) {
+		player->setVarStats(STAT_MAGICLEVEL, -(int32_t)(player->getDefaultStats(STAT_MAGICLEVEL) * ((magicLevelPercent - 100) / 100.f)));
+		needUpdateStats = true;
+	}
+
+	if (skillFist > 0) {
+		player->setVarSkill(SKILL_FIST, -skillFist);
+		needUpdateSkills = true;
+	}
+	if (skillSword > 0) {
+		player->setVarSkill(SKILL_SWORD, -skillSword);
+		needUpdateSkills = true;
+	}
+	if (skillClub > 0) {
+		player->setVarSkill(SKILL_CLUB, -skillClub);
+		needUpdateSkills = true;
+	}
+	if (skillAxe > 0) {
+		player->setVarSkill(SKILL_AXE, -skillAxe);
+		needUpdateSkills = true;
+	}
+	if (skillDist > 0) {
+		player->setVarSkill(SKILL_DIST, -skillDist);
+		needUpdateSkills = true;
+	}
+	if (skillShield > 0) {
+		player->setVarSkill(SKILL_SHIELD, -skillShield);
+		needUpdateSkills = true;
+	}
+
+	if (magicLevelEnergy > 0) {
+		player->setVarStats(STAT_MAGICLEVELENERGY, -magicLevelEnergy);
+		needUpdateStats = true;
+	}
+	if (magicLevelFire > 0) {
+		player->setVarStats(STAT_MAGICLEVELFIRE, -magicLevelFire);
+		needUpdateStats = true;
+	}
+	if (magicLevelEarth > 0) {
+		player->setVarStats(STAT_MAGICLEVELEARTH, -magicLevelEarth);
+		needUpdateStats = true;
+	}	
+	if (magicLevelIce > 0) {
+		player->setVarStats(STAT_MAGICLEVELICE, -magicLevelIce);
+		needUpdateStats = true;
+	}	
+	if (magicLevelHoly > 0) {
+		player->setVarStats(STAT_MAGICLEVELHOLY, -magicLevelHoly);
+		needUpdateStats = true;
+	}	
+	if (magicLevelDeath > 0) {
+		player->setVarStats(STAT_MAGICLEVELDEATH, -magicLevelDeath);
+		needUpdateStats = true;
+	}
+	if (magicLevelPhysical > 0) {
+		player->setVarStats(STAT_MAGICLEVELPHYSICAL, -magicLevelPhysical);
+		needUpdateStats = true;
+	}
+	if (criticalHitDamage > 0) {
+		player->setVarStats(STAT_CRITICALHITDAMAGE, -criticalHitDamage);
+		needUpdateStats = true;
+	}
 
 	Outfit outfit = it->second;
 	if(outfit.invisible)
@@ -779,21 +1177,20 @@ bool Outfits::removeAttributes(uint32_t playerId, uint32_t outfitId, uint16_t se
 	if(needUpdateSkills)
 		player->sendSkills();
 
-	bool needUpdateStats = false;
-	for(uint32_t s = STAT_FIRST; s <= STAT_LAST; ++s)
-	{
-		if(outfit.stats[s])
-		{
-			needUpdateStats = true;
-			player->setVarStats((stats_t)s, -outfit.stats[s]);
-		}
+	// for(uint32_t s = STAT_FIRST; s <= STAT_LAST; ++s)
+	// {
+	// 	if(outfit.stats[s])
+	// 	{
+	// 		needUpdateStats = true;
+	// 		player->setVarStats((stats_t)s, -outfit.stats[s]);
+	// 	}
 
-		if(outfit.statsPercent[s])
-		{
-			needUpdateStats = true;
-			player->setVarStats((stats_t)s, -(int32_t)(player->getDefaultStats((stats_t)s) * ((outfit.statsPercent[s] - 100) / 100.f)));
-		}
-	}
+	// 	if(outfit.statsPercent[s])
+	// 	{
+	// 		needUpdateStats = true;
+	// 		player->setVarStats((stats_t)s, -(int32_t)(player->getDefaultStats((stats_t)s) * ((outfit.statsPercent[s] - 100) / 100.f)));
+	// 	}
+	// }
 
 	if(needUpdateStats)
 		player->sendStats();
