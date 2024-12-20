@@ -456,6 +456,30 @@ bool Outfits::parseOutfitNode(xmlNodePtr p)
 
 				if(readXMLInteger(configNode, "maxHealthPercent", intValue))
 					outfit.statsPercent[STAT_MAXHEALTH] = intValue;
+					
+				if(readXMLInteger(configNode, "magicLevelEnergy", intValue))
+					outfit.stats[STAT_MAGICLEVELENERGY] = intValue;			
+							
+				if(readXMLInteger(configNode, "magicLevelFire", intValue))
+					outfit.stats[STAT_MAGICLEVELFIRE] = intValue;			
+
+				if(readXMLInteger(configNode, "magicLevelEarth", intValue))
+					outfit.stats[STAT_MAGICLEVELEARTH] = intValue;
+
+				if(readXMLInteger(configNode, "magicLevelIce", intValue))
+					outfit.stats[STAT_MAGICLEVELICE] = intValue;
+
+				if(readXMLInteger(configNode, "magicLevelHoly", intValue))
+					outfit.stats[STAT_MAGICLEVELHOLY] = intValue;
+
+				if(readXMLInteger(configNode, "magicLevelDeath", intValue))
+					outfit.stats[STAT_MAGICLEVELDEATH] = intValue;
+
+				if(readXMLInteger(configNode, "magicLevelPhysical", intValue))
+					outfit.stats[STAT_MAGICLEVELPHYSICAL] = intValue;
+
+				if(readXMLInteger(configNode, "criticalHitDamage", intValue))
+					outfit.stats[STAT_CRITICALHITDAMAGE] = intValue;
 
 				if(readXMLInteger(configNode, "maxManaPercent", intValue))
 					outfit.statsPercent[STAT_MAXMANA] = intValue;
