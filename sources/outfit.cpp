@@ -478,6 +478,9 @@ bool Outfits::parseOutfitNode(xmlNodePtr p)
 				if(readXMLInteger(configNode, "magicLevelPhysical", intValue))
 					outfit.stats[STAT_MAGICLEVELPHYSICAL] = intValue;
 
+				if(readXMLInteger(listNode, "principalSkill", intValue))
+					outfit.principalSkill = intValue;
+
 				if(readXMLInteger(configNode, "criticalHitDamage", intValue))
 					outfit.stats[STAT_CRITICALHITDAMAGE] = intValue;
 
@@ -696,9 +699,9 @@ bool Outfits::addAttributes(uint32_t playerId, uint32_t outfitId, uint16_t sex, 
 	int32_t magicLevelHoly = 0;
 	int32_t magicLevelDeath = 0;
 	int32_t magicLevelPhysical = 0;
-	int32_t magicLevelPhysical = 0;
 	int32_t criticalHitDamage = 0;
 
+	int32_t principalSkill = 0;
 	for (OutfitMap::iterator iter = player->getOutfitsMap().begin(); iter != player->getOutfitsMap().end(); ++iter)
 	{
 		if (player->canWearOutfit(iter->first, iter->second.addons)) {
@@ -769,12 +772,14 @@ bool Outfits::addAttributes(uint32_t playerId, uint32_t outfitId, uint16_t sex, 
 				magicLevelDeath += iter->second.stats[STAT_MAGICLEVELDEATH];
 			}						
 			if (iter->second.stats[STAT_MAGICLEVELPHYSICAL]) {
-				magicLevelPhisical += iter->second.stats[STAT_MAGICLEVELPHYSICAL];
+				magicLevelPhysical += iter->second.stats[STAT_MAGICLEVELPHYSICAL];
 			}						
 			if (iter->second.stats[STAT_CRITICALHITDAMAGE]) {
 				criticalHitDamage += iter->second.stats[STAT_CRITICALHITDAMAGE];
 			}			
 
+			if (iter->second.principalSkill > 0)
+				principalSkill = iter->second.principalSkill
 		}
 	}
 
@@ -868,6 +873,30 @@ bool Outfits::addAttributes(uint32_t playerId, uint32_t outfitId, uint16_t sex, 
 	if (criticalHitDamage > 0) {
 		player->setVarStats(STAT_CRITICALHITDAMAGE, criticalHitDamage);
 		needUpdateStats = true;
+	}
+
+	if (principalSkill > 0) {
+		uint32_t vocId = player->getVocation()->getId();
+		// MS
+		if (vocId == 1 || vocId == 5) {
+			player->setVarStats(STAT_MAGICLEVEL, principalSkill);
+		}
+		// Druid
+		if (vocId == 2 || vocId == 6) {
+			player->setVarStats(STAT_MAGICLEVEL, principalSkill);
+		}
+		// Paladin
+		if (vocId == 3 || vocId == 7) {
+			player->setVarSkill(SKILL_DIST, principalSkill);
+		}
+		// Knight
+		if (vocId == 4 || vocId == 8) {
+			player->setVarSkill(SKILL_AXE, principalSkill);
+			player->setVarSkill(SKILL_CLUB, principalSkill);
+			player->setVarSkill(SKILL_SWORD, principalSkill);
+			player->setVarSkill(SKILL_FIST, principalSkill);
+			player->setVarSkill(SKILL_SHIELD, principalSkill);
+		}
 	}
 
 	Outfit outfit = it->second;
@@ -992,6 +1021,8 @@ bool Outfits::removeAttributes(uint32_t playerId, uint32_t outfitId, uint16_t se
 	int32_t magicLevelPhysical = 0;
 	int32_t criticalHitDamage = 0;
 
+	int32_t principalSkill = 0;
+
 	for (OutfitMap::iterator iter = player->getOutfitsMap().begin(); iter != player->getOutfitsMap().end(); ++iter)
 	{
 		if (player->canWearOutfit(iter->first, iter->second.addons)) {
@@ -1062,12 +1093,14 @@ bool Outfits::removeAttributes(uint32_t playerId, uint32_t outfitId, uint16_t se
 				magicLevelDeath += iter->second.stats[STAT_MAGICLEVELDEATH];
 			}						
 			if (iter->second.stats[STAT_MAGICLEVELPHYSICAL]) {
-				magicLevelPhisical += iter->second.stats[STAT_MAGICLEVELPHYSICAL];
+				magicLevelPhysical += iter->second.stats[STAT_MAGICLEVELPHYSICAL];
 			}						
 			if (iter->second.stats[STAT_CRITICALHITDAMAGE]) {
 				criticalHitDamage += iter->second.stats[STAT_CRITICALHITDAMAGE];
-			}			
+			}
 
+			if (iter->second.principalSkill > 0) 
+				principalSkill = iter->second.principalSkill;
 		}
 	}
 
@@ -1163,6 +1196,30 @@ bool Outfits::removeAttributes(uint32_t playerId, uint32_t outfitId, uint16_t se
 		needUpdateStats = true;
 	}
 
+	if (principalSkill > 0) {
+		uint32_t vocId = player->getVocation()->getId();
+		// MS
+		if (vocId == 1 || vocId == 5) {
+			player->setVarStats(STAT_MAGICLEVEL, -principalSkill);
+		}
+		// Druid
+		if (vocId == 2 || vocId == 6) {
+			player->setVarStats(STAT_MAGICLEVEL, -principalSkill);
+		}
+		// Paladin
+		if (vocId == 3 || vocId == 7) {
+			player->setVarSkill(SKILL_DIST, -principalSkill);
+		}
+		// Knight
+		if (vocId == 4 || vocId == 8) {
+			player->setVarSkill(SKILL_AXE, -principalSkill);
+			player->setVarSkill(SKILL_CLUB, -principalSkill);
+			player->setVarSkill(SKILL_SWORD, -principalSkill);
+			player->setVarSkill(SKILL_FIST, -principalSkill);
+			player->setVarSkill(SKILL_SHIELD, -principalSkill);
+		}
+	}
+
 	Outfit outfit = it->second;
 	if(outfit.invisible)
 		player->removeCondition(CONDITION_INVISIBLE, CONDITIONID_OUTFIT);
@@ -1182,21 +1239,21 @@ bool Outfits::removeAttributes(uint32_t playerId, uint32_t outfitId, uint16_t se
 	if(outfit.regeneration)
 		player->removeCondition(CONDITION_REGENERATION, CONDITIONID_OUTFIT);
 
-	bool needUpdateSkills = false;
-	for(uint32_t i = SKILL_FIRST; i <= SKILL_LAST; ++i)
-	{
-		if(outfit.skills[i])
-		{
-			needUpdateSkills = true;
-			player->setVarSkill((skills_t)i, -outfit.skills[i]);
-		}
+	// bool needUpdateSkills = false;
+	// for(uint32_t i = SKILL_FIRST; i <= SKILL_LAST; ++i)
+	// {
+	// 	if(outfit.skills[i])
+	// 	{
+	// 		needUpdateSkills = true;
+	// 		player->setVarSkill((skills_t)i, -outfit.skills[i]);
+	// 	}
 
-		if(outfit.skillsPercent[i])
-		{
-			needUpdateSkills = true;
-			player->setVarSkill((skills_t)i, -(int32_t)(player->getSkill((skills_t)i, SKILL_LEVEL) * ((outfit.skillsPercent[i] - 100) / 100.f)));
-		}
-	}
+	// 	if(outfit.skillsPercent[i])
+	// 	{
+	// 		needUpdateSkills = true;
+	// 		player->setVarSkill((skills_t)i, -(int32_t)(player->getSkill((skills_t)i, SKILL_LEVEL) * ((outfit.skillsPercent[i] - 100) / 100.f)));
+	// 	}
+	// }
 
 	if(needUpdateSkills)
 		player->sendSkills();
