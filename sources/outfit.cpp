@@ -456,7 +456,10 @@ bool Outfits::parseOutfitNode(xmlNodePtr p)
 
 				if(readXMLInteger(configNode, "maxHealthPercent", intValue))
 					outfit.statsPercent[STAT_MAXHEALTH] = intValue;
-					
+
+				if(readXMLInteger(configNode, "principalSkill", intValue))
+					outfit.principalSkill = intValue;
+
 				if(readXMLInteger(configNode, "magicLevelEnergy", intValue))
 					outfit.stats[STAT_MAGICLEVELENERGY] = intValue;			
 							
@@ -477,9 +480,6 @@ bool Outfits::parseOutfitNode(xmlNodePtr p)
 
 				if(readXMLInteger(configNode, "magicLevelPhysical", intValue))
 					outfit.stats[STAT_MAGICLEVELPHYSICAL] = intValue;
-
-				if(readXMLInteger(listNode, "principalSkill", intValue))
-					outfit.principalSkill = intValue;
 
 				if(readXMLInteger(configNode, "criticalHitDamage", intValue))
 					outfit.stats[STAT_CRITICALHITDAMAGE] = intValue;
@@ -668,10 +668,13 @@ bool Outfits::addAttributes(uint32_t playerId, uint32_t outfitId, uint16_t sex, 
 	if(!player || player->isRemoved())
 		return false;
 
+	std::cout << "addattrib" << std::endl;
+
 	OutfitMap map = outfitsMap[sex];
 	OutfitMap::iterator it = map.find(outfitId);
 	if(it == map.end())
 		return false;
+	std::cout << "addattrib2" << std::endl;
 
 	bool needUpdateStats = false;
 	bool needUpdateSkills = false;
@@ -783,7 +786,9 @@ bool Outfits::addAttributes(uint32_t playerId, uint32_t outfitId, uint16_t sex, 
 		}
 	}
 
+
 	if (health > 0) {
+		std::cout << "health q era pra adicionar: " << health << std::endl;
 		player->setVarStats(STAT_MAXHEALTH, health);
 		needUpdateStats = true;
 	}
