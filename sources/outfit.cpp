@@ -779,7 +779,7 @@ bool Outfits::addAttributes(uint32_t playerId, uint32_t outfitId, uint16_t sex, 
 			}			
 
 			if (iter->second.principalSkill > 0)
-				principalSkill = iter->second.principalSkill
+				principalSkill = iter->second.principalSkill;
 		}
 	}
 
@@ -992,7 +992,7 @@ bool Outfits::removeAttributes(uint32_t playerId, uint32_t outfitId, uint16_t se
 	if(it == map.end())
 		return false;
 
-		bool needUpdateStats = false;
+	bool needUpdateStats = false;
 	bool needUpdateSkills = false;
 	int32_t health = 0;
 	int32_t mana = 0;
@@ -1017,7 +1017,6 @@ bool Outfits::removeAttributes(uint32_t playerId, uint32_t outfitId, uint16_t se
 	int32_t magicLevelIce = 0;
 	int32_t magicLevelHoly = 0;
 	int32_t magicLevelDeath = 0;
-	int32_t magicLevelPhysical = 0;
 	int32_t magicLevelPhysical = 0;
 	int32_t criticalHitDamage = 0;
 
