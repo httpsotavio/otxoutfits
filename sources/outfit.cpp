@@ -664,7 +664,6 @@ bool Outfits::getOutfit(uint32_t outfitId, uint16_t sex, Outfit& outfit)
 
 bool Outfits::addAttributes(uint32_t playerId, uint32_t outfitId, uint16_t sex, uint16_t addons)
 {
-	std::cout << "adicionando atributos" << std::endl;
 	Player* player = g_game.getPlayerByID(playerId);
 	if(!player || player->isRemoved())
 		return false;
@@ -703,13 +702,15 @@ bool Outfits::addAttributes(uint32_t playerId, uint32_t outfitId, uint16_t sex, 
 	int32_t criticalHitDamage = 0;
 
 	int32_t principalSkill = 0;
-	for (OutfitMap::iterator iter = player->getOutfitsMap().begin(); iter != player->getOutfitsMap().end(); ++iter)
+
+	OutfitMap map = player->getOutfitsMap();
+	std::cout << "size: " << map.size() << std::endl;
+	for (OutfitMap::iterator iter = map.begin(); iter != map.end(); ++iter)
 	{
-		std::cout << "outfits que o player tem: iteirando pela outfit " << iter->second.name << std::endl;
+		std::cout << "outfits que o player tem: iteirando pela outfit id" << iter->second.outfitId << " name " << iter->second.name << std::endl;
 		if (player->canWearOutfit(iter->first, 3)) {
 			if (iter->second.stats[STAT_MAXHEALTH]) {
 				health += iter->second.stats[STAT_MAXHEALTH];
-				std::cout << "adicionou mais health, ficando " << health << std::endl;
 			}			
 			if (iter->second.stats[STAT_MAXMANA]) {
 				mana += iter->second.stats[STAT_MAXMANA];
@@ -788,7 +789,6 @@ bool Outfits::addAttributes(uint32_t playerId, uint32_t outfitId, uint16_t sex, 
 
 
 	if (health > 0) {
-		std::cout << "health q era pra adicionar: " << health << std::endl;
 		player->setVarStats(STAT_MAXHEALTH, health);
 		needUpdateStats = true;
 	}
@@ -1028,12 +1028,13 @@ bool Outfits::removeAttributes(uint32_t playerId, uint32_t outfitId, uint16_t se
 
 	int32_t principalSkill = 0;
 
-	for (OutfitMap::iterator iter = player->getOutfitsMap().begin(); iter != player->getOutfitsMap().end(); ++iter)
+	OutfitMap map = player->getOutfitsMap();
+	for (OutfitMap::iterator iter = map.begin(); iter != map.end(); ++iter)
 	{
-		if (player->canWearOutfit(iter->first, iter->second.addons)) {
+		if (player->canWearOutfit(iter->first, 3)) {
 			if (iter->second.stats[STAT_MAXHEALTH]) {
 				health += iter->second.stats[STAT_MAXHEALTH];
-			}			
+			}		
 			if (iter->second.stats[STAT_MAXMANA]) {
 				mana += iter->second.stats[STAT_MAXMANA];
 			}			
@@ -1111,7 +1112,7 @@ bool Outfits::removeAttributes(uint32_t playerId, uint32_t outfitId, uint16_t se
 
 	if (health > 0) {
 		player->setVarStats(STAT_MAXHEALTH, -health);
-		std::cout << "remvoeu " << health << std::endl;
+		std::cout << "removeu " << health << std::endl;
 		needUpdateStats = true;
 	}
 	if (mana > 0) {
