@@ -669,9 +669,8 @@ bool Outfits::addAttributes(uint32_t playerId, uint32_t outfitId, uint16_t sex, 
 		return false;
 
 	OutfitMap map = outfitsMap[sex];
-	OutfitMap::iterator it = map.find(outfitId);
-	if(it == map.end())
-		return false;
+	if(!map.size())
+		return 0;
 
 	bool needUpdateStats = false;
 	bool needUpdateSkills = false;
@@ -702,12 +701,8 @@ bool Outfits::addAttributes(uint32_t playerId, uint32_t outfitId, uint16_t sex, 
 	int32_t criticalHitDamage = 0;
 
 	int32_t principalSkill = 0;
-
-	OutfitMap map = player->getOutfitsMap();
-	std::cout << "size: " << map.size() << std::endl;
 	for (OutfitMap::iterator iter = map.begin(); iter != map.end(); ++iter)
 	{
-		std::cout << "outfits que o player tem: iteirando pela outfit id" << iter->second.outfitId << " name " << iter->second.name << std::endl;
 		if (player->canWearOutfit(iter->first, 3)) {
 			if (iter->second.stats[STAT_MAXHEALTH]) {
 				health += iter->second.stats[STAT_MAXHEALTH];
@@ -904,81 +899,8 @@ bool Outfits::addAttributes(uint32_t playerId, uint32_t outfitId, uint16_t sex, 
 		}
 	}
 
-	Outfit outfit = it->second;
-	if(outfit.requirement != (AddonRequirement_t)addons && (outfit.requirement != REQUIREMENT_ANY || !addons))
-		return false;
-
-	if(outfit.invisible)
-	{
-		Condition* condition = Condition::createCondition(CONDITIONID_OUTFIT, CONDITION_INVISIBLE, -1, 0);
-		player->addCondition(condition);
-	}
-
-	if(outfit.manaShield)
-	{
-		Condition* condition = Condition::createCondition(CONDITIONID_OUTFIT, CONDITION_MANASHIELD, -1, 0);
-		player->addCondition(condition);
-	}
-
-	if(outfit.speed)
-		g_game.changeSpeed(player, outfit.speed);
-
-	if(outfit.conditionSuppressions)
-	{
-		player->setConditionSuppressions(outfit.conditionSuppressions, false);
-		player->sendIcons();
-	}
-
-	if(outfit.regeneration)
-	{
-		Condition* condition = Condition::createCondition(CONDITIONID_OUTFIT, CONDITION_REGENERATION, -1, 0);
-		if(outfit.healthGain)
-			condition->setParam(CONDITIONPARAM_HEALTHGAIN, outfit.healthGain);
-
-		if(outfit.healthTicks)
-			condition->setParam(CONDITIONPARAM_HEALTHTICKS, outfit.healthTicks);
-
-		if(outfit.manaGain)
-			condition->setParam(CONDITIONPARAM_MANAGAIN, outfit.manaGain);
-
-		if(outfit.manaTicks)
-			condition->setParam(CONDITIONPARAM_MANATICKS, outfit.manaTicks);
-
-		player->addCondition(condition);
-	}
-
-	// for(uint32_t i = SKILL_FIRST; i <= SKILL_LAST; ++i)
-	// {
-	// 	if(outfit.skills[i])
-	// 	{
-	// 		needUpdateSkills = true;
-	// 		player->setVarSkill((skills_t)i, outfit.skills[i]);
-	// 	}
-
-	// 	if(outfit.skillsPercent[i])
-	// 	{
-	// 		needUpdateSkills = true;
-	// 		player->setVarSkill((skills_t)i, (int32_t)(player->getSkill((skills_t)i, SKILL_LEVEL) * ((outfit.skillsPercent[i] - 100) / 100.f)));
-	// 	}
-	// }
-
 	if(needUpdateSkills)
 		player->sendSkills();
-
-	// for(uint32_t s = STAT_FIRST; s <= STAT_LAST; ++s)
-	// {
-	// 	if(outfit.stats[s])
-	// 	{
-	// 		needUpdateStats = true;
-	// 		player->setVarStats((stats_t)s, outfit.stats[s]);
-	// 	}
-
-	// 	if(outfit.statsPercent[s])
-	// 	{
-	// 		needUpdateStats = true;
-	// 		player->setVarStats((stats_t)s, (int32_t)(player->getDefaultStats((stats_t)s) * ((outfit.statsPercent[s] - 100) / 100.f)));
-	// 	}
-	// }
 
 	if(needUpdateStats)
 		player->sendStats();
@@ -988,15 +910,13 @@ bool Outfits::addAttributes(uint32_t playerId, uint32_t outfitId, uint16_t sex, 
 
 bool Outfits::removeAttributes(uint32_t playerId, uint32_t outfitId, uint16_t sex)
 {
-	std::cout << "removendo atributos" << std::endl;
 	Player* player = g_game.getPlayerByID(playerId);
 	if(!player || player->isRemoved())
 		return false;
 
 	OutfitMap map = outfitsMap[sex];
-	OutfitMap::iterator it = map.find(outfitId);
-	if(it == map.end())
-		return false;
+	if(!map.size())
+		return 0;
 
 	bool needUpdateStats = false;
 	bool needUpdateSkills = false;
@@ -1028,7 +948,6 @@ bool Outfits::removeAttributes(uint32_t playerId, uint32_t outfitId, uint16_t se
 
 	int32_t principalSkill = 0;
 
-	OutfitMap map = player->getOutfitsMap();
 	for (OutfitMap::iterator iter = map.begin(); iter != map.end(); ++iter)
 	{
 		if (player->canWearOutfit(iter->first, 3)) {
@@ -1112,7 +1031,6 @@ bool Outfits::removeAttributes(uint32_t playerId, uint32_t outfitId, uint16_t se
 
 	if (health > 0) {
 		player->setVarStats(STAT_MAXHEALTH, -health);
-		std::cout << "removeu " << health << std::endl;
 		needUpdateStats = true;
 	}
 	if (mana > 0) {
@@ -1227,58 +1145,8 @@ bool Outfits::removeAttributes(uint32_t playerId, uint32_t outfitId, uint16_t se
 		}
 	}
 
-	Outfit outfit = it->second;
-	if(outfit.invisible)
-		player->removeCondition(CONDITION_INVISIBLE, CONDITIONID_OUTFIT);
-
-	if(outfit.manaShield)
-		player->removeCondition(CONDITION_MANASHIELD, CONDITIONID_OUTFIT);
-
-	if(outfit.speed)
-		g_game.changeSpeed(player, -outfit.speed);
-
-	if(outfit.conditionSuppressions)
-	{
-		player->setConditionSuppressions(outfit.conditionSuppressions, true);
-		player->sendIcons();
-	}
-
-	if(outfit.regeneration)
-		player->removeCondition(CONDITION_REGENERATION, CONDITIONID_OUTFIT);
-
-	// bool needUpdateSkills = false;
-	// for(uint32_t i = SKILL_FIRST; i <= SKILL_LAST; ++i)
-	// {
-	// 	if(outfit.skills[i])
-	// 	{
-	// 		needUpdateSkills = true;
-	// 		player->setVarSkill((skills_t)i, -outfit.skills[i]);
-	// 	}
-
-	// 	if(outfit.skillsPercent[i])
-	// 	{
-	// 		needUpdateSkills = true;
-	// 		player->setVarSkill((skills_t)i, -(int32_t)(player->getSkill((skills_t)i, SKILL_LEVEL) * ((outfit.skillsPercent[i] - 100) / 100.f)));
-	// 	}
-	// }
-
 	if(needUpdateSkills)
 		player->sendSkills();
-
-	// for(uint32_t s = STAT_FIRST; s <= STAT_LAST; ++s)
-	// {
-	// 	if(outfit.stats[s])
-	// 	{
-	// 		needUpdateStats = true;
-	// 		player->setVarStats((stats_t)s, -outfit.stats[s]);
-	// 	}
-
-	// 	if(outfit.statsPercent[s])
-	// 	{
-	// 		needUpdateStats = true;
-	// 		player->setVarStats((stats_t)s, -(int32_t)(player->getDefaultStats((stats_t)s) * ((outfit.statsPercent[s] - 100) / 100.f)));
-	// 	}
-	// }
 
 	if(needUpdateStats)
 		player->sendStats();
