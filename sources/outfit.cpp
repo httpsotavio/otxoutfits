@@ -664,6 +664,7 @@ bool Outfits::getOutfit(uint32_t outfitId, uint16_t sex, Outfit& outfit)
 
 bool Outfits::addAttributes(uint32_t playerId, uint32_t outfitId, uint16_t sex, uint16_t addons)
 {
+	std::cout << "adicionando atributos" << std::endl;
 	Player* player = g_game.getPlayerByID(playerId);
 	if(!player || player->isRemoved())
 		return false;
@@ -704,9 +705,11 @@ bool Outfits::addAttributes(uint32_t playerId, uint32_t outfitId, uint16_t sex, 
 	int32_t principalSkill = 0;
 	for (OutfitMap::iterator iter = player->getOutfitsMap().begin(); iter != player->getOutfitsMap().end(); ++iter)
 	{
+		std::cout << "outfits que o player tem: iteirando pela outfit " << iter->second.name << std::endl;
 		if (player->canWearOutfit(iter->first, 3)) {
 			if (iter->second.stats[STAT_MAXHEALTH]) {
 				health += iter->second.stats[STAT_MAXHEALTH];
+				std::cout << "adicionou mais health, ficando " << health << std::endl;
 			}			
 			if (iter->second.stats[STAT_MAXMANA]) {
 				mana += iter->second.stats[STAT_MAXMANA];
@@ -985,6 +988,7 @@ bool Outfits::addAttributes(uint32_t playerId, uint32_t outfitId, uint16_t sex, 
 
 bool Outfits::removeAttributes(uint32_t playerId, uint32_t outfitId, uint16_t sex)
 {
+	std::cout << "removendo atributos" << std::endl;
 	Player* player = g_game.getPlayerByID(playerId);
 	if(!player || player->isRemoved())
 		return false;
@@ -1107,6 +1111,7 @@ bool Outfits::removeAttributes(uint32_t playerId, uint32_t outfitId, uint16_t se
 
 	if (health > 0) {
 		player->setVarStats(STAT_MAXHEALTH, -health);
+		std::cout << "remvoeu " << health << std::endl;
 		needUpdateStats = true;
 	}
 	if (mana > 0) {
