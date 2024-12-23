@@ -4563,6 +4563,9 @@ bool Player::addOutfit(uint32_t outfitId, uint32_t addons)
 
 	outfit.addons |= addons;
 	outfits[outfitId] = outfit;
+
+	outfitAttributes = !Outfits::getInstance()->removeAttributes(getID(), defaultOutfit.lookType, sex);
+	outfitAttributes = Outfits::getInstance()->addAttributes(getID(), outfitId, sex, defaultOutfit.lookAddons);
 	return true;
 }
 

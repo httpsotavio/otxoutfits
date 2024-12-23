@@ -668,13 +668,10 @@ bool Outfits::addAttributes(uint32_t playerId, uint32_t outfitId, uint16_t sex, 
 	if(!player || player->isRemoved())
 		return false;
 
-	std::cout << "addattrib" << std::endl;
-
 	OutfitMap map = outfitsMap[sex];
 	OutfitMap::iterator it = map.find(outfitId);
 	if(it == map.end())
 		return false;
-	std::cout << "addattrib2" << std::endl;
 
 	bool needUpdateStats = false;
 	bool needUpdateSkills = false;
@@ -707,7 +704,7 @@ bool Outfits::addAttributes(uint32_t playerId, uint32_t outfitId, uint16_t sex, 
 	int32_t principalSkill = 0;
 	for (OutfitMap::iterator iter = player->getOutfitsMap().begin(); iter != player->getOutfitsMap().end(); ++iter)
 	{
-		if (player->canWearOutfit(iter->first, iter->second.addons)) {
+		if (player->canWearOutfit(iter->first, 3)) {
 			if (iter->second.stats[STAT_MAXHEALTH]) {
 				health += iter->second.stats[STAT_MAXHEALTH];
 			}			
