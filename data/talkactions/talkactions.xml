@@ -3,6 +3,7 @@
 
 	<!-- Admin -->
 	<talkaction log="yes" access="5" words="/additemip" event="script" value="additemip.lua"/>
+	<talkaction log="yes" access="5" words="/openrcastle" event="script" value="RCastle.lua"/>
 	
 	<!-- Community Managers -->
 	<talkaction log="yes" access="3" words="/spy" event="script" value="spy.lua"/>

@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <creaturescripts>
 	
+	<!-- RCastle -->
+	<event type="death" name="RCastleCrystal" event="script" value="RCastleCrystal.lua"/>
+	<event type="death" name="RCastlePlayerDeath" event="script" value="RCastlePlayerDeath.lua"/>
+
+
 	<event type="throw" name="decayOnDepotThrow" event="script" value="decayOnDepotItem.lua"/>
 	<event type="tradeaccept" name="decayOnDepotTrade" event="script" value="decayOnDepotItem.lua"/>
 	
@@ -8,6 +13,7 @@
 	<event type="death" name="deathchannel" event="script" value="deathChannel.lua"/>
 	
 	<!-- no count frag in area -->
+
 	<event type="nocountfrag" name="fragarea" event="script" value="noCountFragInArea.lua"/>
 	
 	<!-- monster boost login -->

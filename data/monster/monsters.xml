@@ -589,4 +589,8 @@
 	<monster name="Adept of the Cult" file="Voodoo Cultists/adept of the cult.xml"/>
 	<monster name="Enlightened of the Cult" file="Voodoo Cultists/enlightened of the cult.xml"/>
 	<monster name="Novice of the Cult" file="Voodoo Cultists/novice of the cult.xml"/>
+
+
+	<monster name="Blue Crystal" file="blueCrystal.xml"/>
+	<monster name="Red Crystal" file="redCrystal.xml"/>
 </monsters>

@@ -1,5 +1,4 @@
 local files = {
-
     'internal/000-constant.lua',
     'internal/001-class.lua',
     'internal/002-wait.lua',
@@ -16,7 +15,8 @@ local files = {
     '100-shortcut.lua',
     'killuaslib.lua',
     'deletebra_lib.lua',
-    'reset_system.lua'
+    'reset_system.lua',
+    'RubinOTCastle.lua'
 }
 
 for _, file in ipairs(files) do

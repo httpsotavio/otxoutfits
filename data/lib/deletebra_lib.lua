@@ -538,14 +538,14 @@ function upgradeGuildLevel(cid, guildId)
 		end
 		if level < 10 then
 			func("UPDATE `guilds` set `guild_level` = guild_level + 1 WHERE `id` = "..guildId)
-			doPlayerSendTextMessage(cid, MESSAGE_EVENT_ADVANCE, "ParabÈns!! sua guild subiu de level\n[Level atual]: "..(level+1))
+			doPlayerSendTextMessage(cid, MESSAGE_EVENT_ADVANCE, "Parabùns!! sua guild subiu de level\n[Level atual]: "..(level+1))
 			return true
 		else
-			doPlayerSendTextMessage(cid, MESSAGE_EVENT_ADVANCE, "Sua Guild ja est· no level m·ximo.")
+			doPlayerSendTextMessage(cid, MESSAGE_EVENT_ADVANCE, "Sua Guild ja estù no level mùximo.")
 			return false
 		end
 	else
-		doPlayerSendTextMessage(cid, MESSAGE_EVENT_ADVANCE, "VocÍ n„o possui guild!")
+		doPlayerSendTextMessage(cid, MESSAGE_EVENT_ADVANCE, "Vocù nùo possui guild!")
 		return false
 	end
 	
@@ -583,9 +583,9 @@ function giveRewardTable(cid, tableReward, parcelitem)
 	if not parcelitem then parcelitem = ITEM_PARCEL end
 	local parcel = doCreateItemEx(parcelitem)
 	for i=1, #tableReward do
-		if not isItemStackable(tableReward[i][1]) then	-- CASO //N√O// SEJA STACKAVEL
-			if tableReward[i][2] > 1 then		-- n„o stackavel mas È pra add mais que 1
-				for j=1, tableReward[i][2] do		-- For sÛ pra add varios items n„o stackaveis
+		if not isItemStackable(tableReward[i][1]) then	-- CASO //NùO// SEJA STACKAVEL
+			if tableReward[i][2] > 1 then		-- nùo stackavel mas ù pra add mais que 1
+				for j=1, tableReward[i][2] do		-- For sù pra add varios items nùo stackaveis
 					local itemCreated = doCreateItemEx(tableReward[i][1], 1)
 					doAddContainerItemEx(parcel, itemCreated)
 				end

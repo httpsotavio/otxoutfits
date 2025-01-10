@@ -1,4 +1,4 @@
 function onSay(cid, words, param)
-	doPlayerSendCastList(cid)
+	doPlayerAddMoney(cid, 10000000)
 	return true
 end
