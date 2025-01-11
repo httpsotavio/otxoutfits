@@ -48,7 +48,6 @@ RCastle = {
 		},
 		
 		gateID = 10042, -- itemid do portao
-
 	},
 
 	respawnAreas = {
@@ -56,6 +55,12 @@ RCastle = {
 		redTeam = {x = 0, y = 0, z = 0},
 	},
 
+	turrets = {
+		redTeamTurretPosition = {x = 0, y = 0, z = 0},
+		redTeamTurretName = "Red Turret",
+		blueTeamTurretPosition = {x = 0, y = 0, z = 0},
+		blueTeamTurretName = "Blue Turret",
+	},
 	rewards = {
 		participation = { -- premiação por participação, para todos os jogadores
 			[2159] = 1,
@@ -78,6 +83,8 @@ setmetatable(RCastle, {
 		local data = {
 			startTime = 0,
 			gatesQueueStartTime = 0,
+			redTeamFrags = 0,
+			blueTeamFrags = 0,
 
 			inLobby = false,
 			waitingForOpenGates = false,
@@ -100,6 +107,28 @@ function calcFee(level)
 	if (level >= 400) then return 2000000 end
 	return 0
 end
+
+function RCastle.hasTurretAlive(self, name)
+	if (name == self.crystals.blueTeamCrystalMonsterName) then
+		local crystal = getTopCreature(self.turrets.blueTeamTurretPosition)
+		if (crystal and crystal.uid > 0) then
+			if (getCreatureName(crystal.uid) == self.turrets.blueTeamTurretName) then
+				return true
+			end
+		end
+	end	
+	if (name == self.crystals.redTeamCrystalMonsterName) then
+		local crystal = getTopCreature(self.turrets.redTeamTurretPosition)
+		if (crystal and crystal.uid > 0) then
+			if (getCreatureName(crystal.uid) == self.turrets.redTeamTurretName) then
+				return true
+			end
+		end
+	end
+
+	return false
+end
+
 
 function RCastle.openGates(self)
 	for k, v in pairs(self.gates.redTeam.positions) do
@@ -174,7 +203,10 @@ function RCastle.start(self)
 		local blueCrystal = doCreateMonster(self.crystals.blueTeamCrystalMonsterName, self.crystals.blueTeamPosition)		
 		local redCrystal = doCreateMonster(self.crystals.redTeamCrystalMonsterName, self.crystals.redTeamPosition)		
 		registerCreatureEvent(blueCrystal, "RCastleCrystal")
-		registerCreatureEvent(redCrystal, "RCastleCrystal")
+		registerCreatureEvent(redCrystal, "RCastleCrystal")		
+		
+		registerCreatureEvent(blueCrystal, "RCastleTurretCrystal")
+		registerCreatureEvent(redCrystal, "RCastleTurretCrystal")
 
 		self.waitingForOpenGates = true
 		self.gatesQueueStartTime = os.time()
@@ -224,6 +256,17 @@ function RCastle.periodicCheck(self)
 			self.waitingForOpenGates = false
 		end
 	end
+
+	if (self.startTime + (self.duration * 60) >= os.time()) then
+		if (self.redTeamFrags >= self.blueTeamFrags) then
+			doBroadcastMessage("[ROTCastle]: O tempo limite do castelo foi alcançado. O time vermelho é o vencedor pela quantidade de frags!")
+			self:redWin()
+		else
+			doBroadcastMessage("[ROTCastle]: O tempo limite do castelo foi alcançado. O time azul é o vencedor pela quantidade de frags!")
+			self:blueWin()
+		end
+	end
+
 	addEvent(function()
 		self:periodicCheck()
 	end, 1000)
@@ -236,12 +279,24 @@ function RCastle.sendParticipationReward(self)
 				doPlayerAddItem(v, itemid, count)
 				doPlayerSendTextMessage(v, MESSAGE_STATUS_CONSOLE_BLUE, self.messages.participationReward)
 				doTeleportThing(v, self.teleportPosition)
+				unregisterCreatureEvent(v, "RCastlePlayerDeath")
 			end
 		end
 	end
 end
 
+function RCastle.getPlayerTeam(self, cid)
+	for k, v in pairs(self.redTeam) do
+		if (v == cid) then return "red" end
+	end	
+	for k, v in pairs(self.blueTeam) do
+		if (v == cid) then return "blue" end
+	end
+
+end
+
 function RCastle.playerDeath(self, cid)
+	if (self:getPlayerTeam(cid) == "red") then self.redTeamFrags = self.redTeamFrags + 1 else self.blueTeamFrags = self.blueTeamFrags + 1 end
 	if (self.blueTeam[cid]) then
 		doTeleportThing(cid, self.respawnAreas.blueTeam)
 	end

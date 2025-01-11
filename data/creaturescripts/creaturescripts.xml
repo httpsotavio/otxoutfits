@@ -4,6 +4,7 @@
 	<!-- RCastle -->
 	<event type="death" name="RCastleCrystal" event="script" value="RCastleCrystal.lua"/>
 	<event type="death" name="RCastlePlayerDeath" event="script" value="RCastlePlayerDeath.lua"/>
+	<event type="statschange" name="RCastleTurretCrystal" event="script" value="RCastleTurretCrystal.lua"/>
 
 
 	<event type="throw" name="decayOnDepotThrow" event="script" value="decayOnDepotItem.lua"/>
